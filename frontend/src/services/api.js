@@ -1,6 +1,13 @@
 import axios from "axios";
 
-let rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+let rawBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+if (!rawBaseUrl && typeof window !== "undefined" && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+  rawBaseUrl = "https://teachus-backend-api.onrender.com/api";
+} else if (!rawBaseUrl) {
+  rawBaseUrl = "http://localhost:5000/api";
+}
+
 if (!rawBaseUrl.startsWith("http://") && !rawBaseUrl.startsWith("https://")) {
   rawBaseUrl = `https://${rawBaseUrl}`;
 }
