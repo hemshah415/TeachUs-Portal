@@ -589,7 +589,7 @@ async function getUploads(req, res) {
   }
 }
 
-// Fetch single upload details with errors and students
+// Get detailed single upload preview
 async function getUploadDetails(req, res) {
   const { id } = req.params;
 
@@ -600,8 +600,8 @@ async function getUploadDetails(req, res) {
        FROM uploads u 
        JOIN colleges c ON u.college_id = c.id 
        LEFT JOIN academic_years ay ON u.academic_year_id = ay.id 
-       WHERE (u.id = ? OR u.upload_id = ?)`,
-      [id, id]
+       WHERE u.id = ?`,
+      [id]
     );
 
     if (uploads.length === 0) {
@@ -609,14 +609,14 @@ async function getUploadDetails(req, res) {
     }
 
     const upload = uploads[0];
-    const targetUploadId = upload.id || upload.upload_id || id;
-    const [errors] = await pool.query(`SELECT * FROM validation_errors WHERE (upload_id = ? OR upload_id = ?) ORDER BY error_id ASC`, [targetUploadId, id]);
-    const [students] = await pool.query(`SELECT * FROM students WHERE (upload_id = ? OR upload_id = ?) ORDER BY roll_number ASC`, [targetUploadId, id]);
+    const targetUploadId = upload.id || id;
+    const [errors] = await pool.query(`SELECT * FROM validation_errors WHERE upload_id = ? ORDER BY id ASC`, [targetUploadId]);
+    const [students] = await pool.query(`SELECT * FROM students WHERE upload_id = ? ORDER BY roll_number ASC`, [targetUploadId]);
 
     return res.json({ upload, errors, students });
   } catch (error) {
     console.error("Get upload details error:", error);
-    return res.status(500).json({ error: "Failed to fetch upload details" });
+    return res.status(500).json({ error: `Failed to fetch upload details: ${error.message}` });
   }
 }
 
@@ -670,11 +670,11 @@ async function updateAdminStatus(req, res) {
   try {
     const { pool } = await getDb();
     await pool.query(
-      `UPDATE uploads SET admin_status = ?, status = ?, admin_remarks = ? WHERE id = ? OR upload_id = ?`,
-      [admin_status, admin_status, admin_remarks || "", id, id]
+      `UPDATE uploads SET admin_status = ?, status = ?, admin_remarks = ? WHERE id = ?`,
+      [admin_status, admin_status, admin_remarks || "", id]
     );
 
-    const [up] = await pool.query(`SELECT u.file_name, u.college_id, c.name as college_name FROM uploads u JOIN colleges c ON u.college_id = c.id WHERE (u.id = ? OR u.upload_id = ?)`, [id, id]);
+    const [up] = await pool.query(`SELECT u.file_name, u.college_id, c.name as college_name FROM uploads u JOIN colleges c ON u.college_id = c.id WHERE u.id = ?`, [id]);
     const colName = up[0]?.college_name || "College";
     const fileName = up[0]?.file_name || `Batch #${id}`;
     const collegeId = up[0]?.college_id;
@@ -683,8 +683,9 @@ async function updateAdminStatus(req, res) {
     const notifType = admin_status === "Approved" ? "SUCCESS" : admin_status === "Rejected" ? "URGENT" : "WARNING";
     await createNotification({
       college_id: collegeId,
-      title: `Submission Status: ${admin_status}`,
-      message: `Your submission file '${fileName}' status has been updated to '${admin_status}'. Admin Remarks: ${admin_remarks || 'None'}`,
+      user_id: null,
+      title: `Submission Status Updated: ${admin_status}`,
+      message: `Admin review for file '${fileName}' from ${colName} was marked as '${admin_status}'. Remarks: ${admin_remarks || 'None'}`,
       type: notifType
     });
 
