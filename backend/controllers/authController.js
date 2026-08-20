@@ -21,7 +21,7 @@ async function login(req, res) {
     const [rows] = await pool.query(
       `SELECT u.*, c.name as college_name, c.code as college_code 
        FROM users u 
-       LEFT JOIN colleges c ON (u.college_id = c.id OR u.college_id = c.college_id) 
+       LEFT JOIN colleges c ON u.college_id = c.id 
        WHERE LOWER(u.username) = LOWER(?) OR LOWER(u.email) = LOWER(?)`,
       [cleanUsername, cleanUsername]
     );
@@ -64,11 +64,15 @@ async function login(req, res) {
 
     const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "24h" });
 
-    // Log login
-    await pool.query(
-      `INSERT INTO audit_logs (user_id, username, college_name, action, details) VALUES (?, ?, ?, ?, ?)`,
-      [user.id, user.username, user.college_name || "Admin Portal", "USER_LOGIN", `User ${user.username} logged in successfully`]
-    );
+    // Log login (non-blocking)
+    try {
+      await pool.query(
+        `INSERT INTO audit_logs (user_id, username, college_name, action, details) VALUES (?, ?, ?, ?, ?)`,
+        [user.id, user.username, user.college_name || "Admin Portal", "USER_LOGIN", `User ${user.username} logged in successfully`]
+      );
+    } catch (aErr) {
+      console.error("Non-critical audit log error during login:", aErr.message);
+    }
 
     return res.json({
       message: "Login successful",
@@ -89,8 +93,8 @@ async function getProfile(req, res) {
     const userPayload = { ...req.user };
     if (req.user.college_id) {
       const [cols] = await pool.query(
-        `SELECT c.* FROM colleges c WHERE c.id = ? OR c.college_id = ?`,
-        [req.user.college_id, req.user.college_id]
+        `SELECT c.* FROM colleges c WHERE c.id = ?`,
+        [req.user.college_id]
       );
       if (cols.length > 0) {
         userPayload.faculty_training_status = cols[0].faculty_training_status || 'Pending';
