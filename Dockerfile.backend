@@ -1,0 +1,20 @@
+FROM node:20-alpine
+
+# Install Python3, pip, and pandas dependencies for validator
+RUN apk add --no-cache python3 py3-pip py3-pandas py3-openpyxl py3-pillow
+
+WORKDIR /app
+
+# Copy backend dependencies
+COPY backend/package*.json ./backend/
+RUN cd backend && npm install --production
+
+# Copy backend source, database scripts, and validator
+COPY backend ./backend
+COPY validator ./validator
+
+WORKDIR /app/backend
+
+EXPOSE 5000
+
+CMD ["node", "server.js"]
