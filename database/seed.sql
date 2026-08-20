@@ -11,14 +11,14 @@ INSERT INTO colleges (code, name, university, state, contact_email, contact_phon
 ON DUPLICATE KEY UPDATE name=VALUES(name);
 
 -- 2. Default Users (Admin + College Logins)
--- Password for admin: admin123 (hashed: $2b$10$vN0E0wWzO... or generated at db init)
+-- Password for admin: admin123
 -- Password for colleges: college123
 INSERT INTO users (username, password, email, role, college_id, status) VALUES
-('admin', '$2b$10$wO8S2c96y32xZ.m31i7bROu3x8Q7MhR/Vn0X7/6gV4Z9wY1kQzW7a', 'admin@edtechplatform.com', 'ADMIN', NULL, 'ACTIVE'),
-('nkc_user', '$2b$10$wO8S2c96y32xZ.m31i7bROu3x8Q7MhR/Vn0X7/6gV4Z9wY1kQzW7a', 'principal@nkc.edu.in', 'COLLEGE', 1, 'ACTIVE'),
-('lala_user', '$2b$10$wO8S2c96y32xZ.m31i7bROu3x8Q7MhR/Vn0X7/6gV4Z9wY1kQzW7a', 'info@lalacollege.edu.in', 'COLLEGE', 2, 'ACTIVE'),
-('valia_user', '$2b$10$wO8S2c96y32xZ.m31i7bROu3x8Q7MhR/Vn0X7/6gV4Z9wY1kQzW7a', 'contact@valiacollege.edu.in', 'COLLEGE', 3, 'ACTIVE')
-ON DUPLICATE KEY UPDATE email=VALUES(email);
+('admin', '$2b$10$P0RD0JGphS/BixIMFK4W/uPBffRcB6lIKVsWAsqUZGY1xtbSjMCly', 'admin@edtechplatform.com', 'ADMIN', NULL, 'ACTIVE'),
+('nkc_user', '$2b$10$ymP5nKfKON1AILfwx2.s.OLcrrmZTI8ghCIMq9Qa2niCLZiA7pxB6', 'principal@nkc.edu.in', 'COLLEGE', 1, 'ACTIVE'),
+('lala_user', '$2b$10$ymP5nKfKON1AILfwx2.s.OLcrrmZTI8ghCIMq9Qa2niCLZiA7pxB6', 'info@lalacollege.edu.in', 'COLLEGE', 2, 'ACTIVE'),
+('valia_user', '$2b$10$ymP5nKfKON1AILfwx2.s.OLcrrmZTI8ghCIMq9Qa2niCLZiA7pxB6', 'contact@valiacollege.edu.in', 'COLLEGE', 3, 'ACTIVE')
+ON DUPLICATE KEY UPDATE password=VALUES(password);
 
 -- 3. Default Academic Year
 INSERT INTO academic_years (year_label, start_date, end_date, deadline, is_open) VALUES
