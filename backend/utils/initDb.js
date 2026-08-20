@@ -5,11 +5,13 @@ async function initDb() {
   const { pool, isFallback } = await getDb();
   console.log("🔄 Initializing Database Tables & Seed Data...");
 
+  const autoPk = isFallback ? 'INTEGER PRIMARY KEY AUTOINCREMENT' : 'INT PRIMARY KEY AUTO_INCREMENT';
+
   try {
     // 1. Users table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         username VARCHAR(100) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
         email VARCHAR(150) NOT NULL UNIQUE,
@@ -23,7 +25,7 @@ async function initDb() {
     // 2. Colleges table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS colleges (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         code VARCHAR(50) NOT NULL UNIQUE,
         name VARCHAR(255) NOT NULL,
         university VARCHAR(255) DEFAULT 'University of Mumbai',
@@ -46,7 +48,7 @@ async function initDb() {
     // 3. Academic Years table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS academic_years (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         year_label VARCHAR(50) NOT NULL UNIQUE,
         start_date DATE,
         end_date DATE,
@@ -59,7 +61,7 @@ async function initDb() {
     // 4. Templates table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS templates (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         name VARCHAR(255) NOT NULL,
         version VARCHAR(50) NOT NULL DEFAULT 'v1.0',
         file_path VARCHAR(500) NOT NULL,
@@ -72,7 +74,7 @@ async function initDb() {
     // 5. Uploads table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS uploads (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         college_id INT NOT NULL,
         academic_year_id INT NOT NULL,
         file_name VARCHAR(255) NOT NULL,
@@ -90,7 +92,7 @@ async function initDb() {
     // 6. Validation Results table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS validation_results (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         upload_id INT NOT NULL UNIQUE,
         total_rows INT DEFAULT 0,
         passed_rows INT DEFAULT 0,
@@ -104,7 +106,7 @@ async function initDb() {
     // 7. Validation Errors table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS validation_errors (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         upload_id INT NOT NULL,
         \`row_number\` INT NOT NULL,
         column_name VARCHAR(100) NOT NULL,
@@ -117,7 +119,7 @@ async function initDb() {
     // 8. Students table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS students (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         upload_id INT NOT NULL,
         college_id INT NOT NULL,
         academic_year_id INT NOT NULL,
@@ -140,7 +142,7 @@ async function initDb() {
     // 9. Audit Logs table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS audit_logs (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         user_id INT,
         username VARCHAR(100),
         college_name VARCHAR(255),
@@ -162,7 +164,7 @@ async function initDb() {
     // 11. Notifications table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS notifications (
-        id INT PRIMARY KEY ${isFallback ? 'AUTOINCREMENT' : 'AUTO_INCREMENT'},
+        id ${autoPk},
         user_id INT NULL,
         college_id INT NULL,
         title VARCHAR(255) NOT NULL,
