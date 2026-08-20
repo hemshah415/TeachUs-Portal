@@ -57,7 +57,7 @@ async function getDashboardMetrics(req, res) {
              COALESCE(c.code, 'NKC001') as college_code, 
              ay.year_label
       FROM uploads u
-      LEFT JOIN colleges c ON (u.college_id = c.id OR u.college_id = c.college_id)
+      LEFT JOIN colleges c ON u.college_id = c.id
       LEFT JOIN academic_years ay ON u.academic_year_id = ay.id
       ORDER BY u.id DESC
     `);
@@ -121,7 +121,7 @@ async function getPowerBiDataFeed(req, res) {
              ay.year_label, u.file_name, u.student_count, u.validation_status,
              u.admin_status, u.error_count, u.uploaded_at
       FROM uploads u
-      JOIN colleges c ON (u.college_id = c.id OR u.college_id = c.college_id)
+      JOIN colleges c ON u.college_id = c.id
       LEFT JOIN academic_years ay ON u.academic_year_id = ay.id
     `;
     const params = [];

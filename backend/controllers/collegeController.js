@@ -234,8 +234,8 @@ async function getMyCollegeStatus(req, res) {
               COALESCE(c.trainer_name, 'TeachUs Support Team') as trainer_name,
               c.training_notes
        FROM colleges c
-       WHERE c.id = ? OR c.college_id = ?`,
-      [college_id, college_id]
+       WHERE c.id = ?`,
+      [college_id]
     );
 
     if (rows.length === 0) {

@@ -555,7 +555,7 @@ async function getUploads(req, res) {
     let query = `
       SELECT u.*, c.name as college_name, c.code as college_code, ay.year_label
       FROM uploads u
-      JOIN colleges c ON (u.college_id = c.id OR u.college_id = c.college_id)
+      JOIN colleges c ON u.college_id = c.id
       LEFT JOIN academic_years ay ON u.academic_year_id = ay.id
       WHERE 1=1
     `;
@@ -598,7 +598,7 @@ async function getUploadDetails(req, res) {
     const [uploads] = await pool.query(
       `SELECT u.*, c.name as college_name, ay.year_label 
        FROM uploads u 
-       JOIN colleges c ON (u.college_id = c.id OR u.college_id = c.college_id) 
+       JOIN colleges c ON u.college_id = c.id 
        LEFT JOIN academic_years ay ON u.academic_year_id = ay.id 
        WHERE (u.id = ? OR u.upload_id = ?)`,
       [id, id]
@@ -674,7 +674,7 @@ async function updateAdminStatus(req, res) {
       [admin_status, admin_status, admin_remarks || "", id, id]
     );
 
-    const [up] = await pool.query(`SELECT u.file_name, u.college_id, c.name as college_name FROM uploads u JOIN colleges c ON (u.college_id = c.id OR u.college_id = c.college_id) WHERE (u.id = ? OR u.upload_id = ?)`, [id, id]);
+    const [up] = await pool.query(`SELECT u.file_name, u.college_id, c.name as college_name FROM uploads u JOIN colleges c ON u.college_id = c.id WHERE (u.id = ? OR u.upload_id = ?)`, [id, id]);
     const colName = up[0]?.college_name || "College";
     const fileName = up[0]?.file_name || `Batch #${id}`;
     const collegeId = up[0]?.college_id;
