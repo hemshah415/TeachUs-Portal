@@ -136,9 +136,9 @@ async function getPowerBiDataFeed(req, res) {
     const [submissions] = await pool.query(subQuery, params);
 
     let errQuery = `
-      SELECT ve.column_name, ve.error_message, COALESCE(ve.severity, 'ERROR') as severity, COUNT(*) as error_frequency
+      SELECT ve.column_name, ve.error_message, ve.severity, COUNT(*) as count 
       FROM validation_errors ve
-      JOIN uploads u ON (ve.upload_id = u.id OR ve.upload_id = u.upload_id)
+      JOIN uploads u ON ve.upload_id = u.id
     `;
     const errParams = [];
 
@@ -152,7 +152,7 @@ async function getPowerBiDataFeed(req, res) {
     const [errorSummary] = await pool.query(errQuery, errParams);
 
     // Status Ring Breakdown for Doughnut Chart
-    let statusQuery = `SELECT admin_status, COUNT(*) as count FROM uploads u JOIN colleges c ON (u.college_id = c.id OR u.college_id = c.college_id)`;
+    let statusQuery = `SELECT admin_status, COUNT(*) as count FROM uploads u JOIN colleges c ON u.college_id = c.id`;
     const statusParams = [];
     if (college_id) {
       statusQuery += ` WHERE u.college_id = ?`;
@@ -162,7 +162,7 @@ async function getPowerBiDataFeed(req, res) {
     const [statusRing] = await pool.query(statusQuery, statusParams);
 
     // Branch / Stream Student Breakdown for Bar Chart
-    let branchQuery = `SELECT s.branch, COUNT(*) as count FROM students s JOIN uploads u ON (s.upload_id = u.id OR s.upload_id = u.upload_id)`;
+    let branchQuery = `SELECT s.branch, COUNT(*) as count FROM students s JOIN uploads u ON s.upload_id = u.id`;
     const branchParams = [];
     if (college_id) {
       branchQuery += ` WHERE u.college_id = ?`;

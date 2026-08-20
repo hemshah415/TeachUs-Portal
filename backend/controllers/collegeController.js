@@ -118,11 +118,13 @@ async function getCollegesTraining(req, res) {
   try {
     const { pool } = await getDb();
     const [rows] = await pool.query(
-      `SELECT id, college_id, code, name, university, state, contact_email, contact_phone,
+      `SELECT id, code, name, university, state, contact_email, contact_phone,
               COALESCE(faculty_training_status, 'Pending') as faculty_training_status,
               faculty_training_date,
               COALESCE(dashboard_training_status, 'Pending') as dashboard_training_status,
               dashboard_training_date,
+              COALESCE(admin_training_status, 'Pending') as admin_training_status,
+              admin_training_date,
               COALESCE(trainer_name, 'TeachUs Support Team') as trainer_name,
               training_notes
        FROM colleges
@@ -147,7 +149,7 @@ async function getCollegesTraining(req, res) {
     });
   } catch (error) {
     console.error("Error fetching training tracker data:", error);
-    return res.status(500).json({ error: "Failed to fetch training records" });
+    return res.status(500).json({ error: "Failed to fetch training records: " + error.message });
   }
 }
 
@@ -173,7 +175,7 @@ async function updateCollegeTraining(req, res) {
            admin_training_date = ?,
            trainer_name = ?,
            training_notes = ?
-       WHERE id = ? OR college_id = ?`,
+       WHERE id = ?`,
       [
         faculty_training_status || 'Pending',
         faculty_training_date || null,
@@ -183,7 +185,7 @@ async function updateCollegeTraining(req, res) {
         admin_training_date || null,
         trainer_name || 'TeachUs Support Team',
         training_notes || '',
-        id, id
+        id
       ]
     );
 
@@ -193,7 +195,7 @@ async function updateCollegeTraining(req, res) {
     );
 
     // Trigger in-app notification to College User
-    const [cols] = await pool.query(`SELECT name, id FROM colleges WHERE id = ? OR college_id = ?`, [id, id]);
+    const [cols] = await pool.query(`SELECT name, id FROM colleges WHERE id = ?`, [id]);
     const collegeId = cols[0]?.id || id;
 
     let notifMsg = `Training Update from Admin: Faculty Training: '${faculty_training_status || 'Pending'}', Dashboard Training: '${dashboard_training_status || 'Pending'}', Admin Training: '${admin_training_status || 'Pending'}'. Trainer: ${trainer_name || 'TeachUs Support Team'}`;
