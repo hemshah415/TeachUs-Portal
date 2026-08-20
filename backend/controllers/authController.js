@@ -82,7 +82,7 @@ async function login(req, res) {
 
   } catch (error) {
     console.error("Login error:", error);
-    return res.status(500).json({ error: "Server error during authentication" });
+    return res.status(500).json({ error: `Auth Error: ${error.message}` });
   }
 }
 
