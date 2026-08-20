@@ -37,5 +37,4 @@ services:
         fromService:
           type: web
           name: teachus-backend-api
-          property: url
-          append: /api
+          property: host
