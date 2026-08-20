@@ -172,12 +172,13 @@ const AdminDashboard = () => {
 
   const handleOpenTrainingModal = (col) => {
     setSelectedTrainingCollege(col);
+    const norm = (st) => (st === "Done" ? "Completed" : st || "Pending");
     setTrainingForm({
-      faculty_training_status: col.faculty_training_status || "Pending",
+      faculty_training_status: norm(col.faculty_training_status),
       faculty_training_date: col.faculty_training_date ? col.faculty_training_date.split("T")[0] : "",
-      dashboard_training_status: col.dashboard_training_status || "Pending",
+      dashboard_training_status: norm(col.dashboard_training_status),
       dashboard_training_date: col.dashboard_training_date ? col.dashboard_training_date.split("T")[0] : "",
-      admin_training_status: col.admin_training_status || "Pending",
+      admin_training_status: norm(col.admin_training_status),
       admin_training_date: col.admin_training_date ? col.admin_training_date.split("T")[0] : "",
       trainer_name: col.trainer_name || "TeachUs Support Team",
       training_notes: col.training_notes || ""
@@ -2069,6 +2070,7 @@ const AdminDashboard = () => {
                         <option value="Pending">Pending</option>
                         <option value="In Progress">In Progress</option>
                         <option value="Scheduled">Scheduled</option>
+                        <option value="Completed">Completed</option>
                         <option value="Done">Done (Completed)</option>
                       </select>
                     </div>
@@ -2092,6 +2094,7 @@ const AdminDashboard = () => {
                         <option value="Pending">Pending</option>
                         <option value="In Progress">In Progress</option>
                         <option value="Scheduled">Scheduled</option>
+                        <option value="Completed">Completed</option>
                         <option value="Done">Done (Completed)</option>
                       </select>
                     </div>
@@ -2115,6 +2118,7 @@ const AdminDashboard = () => {
                         <option value="Pending">Pending</option>
                         <option value="In Progress">In Progress</option>
                         <option value="Scheduled">Scheduled</option>
+                        <option value="Completed">Completed</option>
                         <option value="Done">Done (Completed)</option>
                       </select>
                     </div>
