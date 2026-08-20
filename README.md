@@ -31,44 +31,51 @@
 
 ---
 
-## 📸 System Screenshots & Interface Preview
+## 📸 System Screenshots & Interface Showcase
 
-### 1. Centralized Authentication Landing Portal
-*Clean Crimson Red & Pure White theme with instant quick-fill demo buttons and dual role access.*
+### 1. Executive Admin Dashboard & Real-Time Analytics
+*Live analytics dashboard featuring data quality scores, status ring breakdowns, branch distribution charts, and direct Power BI JSON data feed integration.*
 
-![Centralized Login Landing Page](docs/screenshots/login_page.png)
-
----
-
-### 2. College Workspace & Automated Validation Engine
-*Drag-and-drop file upload for Excel sheets (.xlsx, .xls) and ZIP archives with instant row-by-row validation feedback.*
-
-![College Dashboard & File Upload Workspace](docs/screenshots/college_dashboard.png)
+![Admin Executive Dashboard & Analytics Charts](docs/screenshots/admin_dashboard_charts.png)
 
 ---
 
-### 3. Admin Submission Review & Remarks Modal
+### 2. Connected Colleges & Training Compliance Tracker
+*Connected colleges table displaying 3-pillar training completion badges (Faculty, Dashboard, Admin), contact info, and account status controls.*
+
+![Connected Colleges Table & Compliance Tracker](docs/screenshots/connected_colleges_table.png)
+
+---
+
+### 3. College Upload Workspace & Validation History
+*College data submission portal displaying active academic year notifications, 3-pillar compliance status, Excel upload dropzone, and history table.*
+
+![College Upload Workspace & Validation History](docs/screenshots/college_dashboard.png)
+
+---
+
+### 4. Admin Submission Review & Remarks Modal
 *Review single submission details, error lists, student rosters, and trigger instant Admin Status updates (Approve, Reject, Correction Requested, In Process).*
 
 ![Admin Submission Review & Remarks Modal](docs/screenshots/admin_review_modal.png)
 
 ---
 
-### 4. Manage Training & Onboarding Modal
-*Side-by-side management and date scheduling for Faculty Training, Dashboard Training, and Admin Training.*
+### 5. Official Excel Template Manager
+*Two-card management portal allowing Admin to view currently published Excel templates and publish updated versioned templates.*
+
+![Official Excel Template Manager](docs/screenshots/official_template_manager.png)
+
+---
+
+### 6. Manage Training & Onboarding Modal
+*Side-by-side date picker and status scheduling for Faculty Training, Dashboard Training, and Admin Training.*
 
 ![Manage Training & Onboarding Modal](docs/screenshots/training_modal.png)
 
 ---
 
-### 5. College Status & Onboarding Inspector
-*Live training readiness status cards, inspector filters, and assigned trainer notes.*
-
-![College Status & Training Inspector Card](docs/screenshots/training_inspector.png)
-
----
-
-### 6. Render 1-Click Blueprint Auto-Deployment
+### 7. Render 1-Click Cloud Deployment Blueprint
 *Unified Docker runtime backend and static site frontend deployment configuration (`render.yaml`).*
 
 ![Render Deployment Blueprint](docs/screenshots/render_blueprint_deployment.png)
