@@ -670,8 +670,8 @@ async function updateAdminStatus(req, res) {
   try {
     const { pool } = await getDb();
     await pool.query(
-      `UPDATE uploads SET admin_status = ?, status = ?, admin_remarks = ? WHERE id = ?`,
-      [admin_status, admin_status, admin_remarks || "", id]
+      `UPDATE uploads SET admin_status = ?, admin_remarks = ? WHERE id = ?`,
+      [admin_status, admin_remarks || "", id]
     );
 
     const [up] = await pool.query(`SELECT u.file_name, u.college_id, c.name as college_name FROM uploads u JOIN colleges c ON u.college_id = c.id WHERE u.id = ?`, [id]);
