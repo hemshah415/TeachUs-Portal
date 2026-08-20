@@ -11,13 +11,13 @@ services:
       - key: JWT_SECRET
         value: "teachus_super_secret_jwt_key_2026"
       - key: DB_HOST
-        sync: false
+        value: "localhost"
       - key: DB_PORT
         value: "3306"
       - key: DB_USER
-        sync: false
+        value: "root"
       - key: DB_PASSWORD
-        sync: false
+        value: "YourPassword123"
       - key: DB_NAME
         value: "college_data_management"
 
