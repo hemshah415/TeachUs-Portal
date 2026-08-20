@@ -223,24 +223,33 @@ async function initDb() {
       console.log("🌱 Default Academic Years Seeded");
     }
 
-    // Seed Users
-    const [existingUsers] = await pool.query(`SELECT COUNT(*) as cnt FROM users`);
-    const countUsers = existingUsers[0]?.cnt || existingUsers[0]?.['COUNT(*)'] || 0;
-    
-    if (countUsers === 0) {
-      const adminPass = await bcrypt.hash("admin123", 10);
-      const collegePass = await bcrypt.hash("college123", 10);
+    // Seed/Ensure Default Users (admin:admin123, college:college123)
+    const adminPass = await bcrypt.hash("admin123", 10);
+    const collegePass = await bcrypt.hash("college123", 10);
 
-      await pool.query(`
-        INSERT INTO users (username, password, email, role, college_id, status) VALUES
-        ('admin', ?, 'admin@edtechplatform.com', 'ADMIN', NULL, 'ACTIVE'),
-        ('nkc_user', ?, 'principal@nkc.edu.in', 'COLLEGE', 1, 'ACTIVE'),
-        ('lala_user', ?, 'info@lalacollege.edu.in', 'COLLEGE', 2, 'ACTIVE'),
-        ('valia_user', ?, 'contact@valiacollege.edu.in', 'COLLEGE', 3, 'ACTIVE'),
-        ('bhavans_user', ?, 'admin@bhavans.ac.in', 'COLLEGE', 4, 'ACTIVE')
-      `, [adminPass, collegePass, collegePass, collegePass, collegePass]);
-      console.log("🌱 Default Admin & College Users Seeded (admin:admin123, college:college123)");
+    const defaultUsers = [
+      { username: 'admin', password: adminPass, email: 'admin@edtechplatform.com', role: 'ADMIN', college_id: null },
+      { username: 'nkc_user', password: collegePass, email: 'principal@nkc.edu.in', role: 'COLLEGE', college_id: 1 },
+      { username: 'lala_user', password: collegePass, email: 'info@lalacollege.edu.in', role: 'COLLEGE', college_id: 2 },
+      { username: 'valia_user', password: collegePass, email: 'contact@valiacollege.edu.in', role: 'COLLEGE', college_id: 3 },
+      { username: 'bhavans_user', password: collegePass, email: 'admin@bhavans.ac.in', role: 'COLLEGE', college_id: 4 }
+    ];
+
+    for (const u of defaultUsers) {
+      const [uCheck] = await pool.query(`SELECT id FROM users WHERE LOWER(username) = LOWER(?)`, [u.username]);
+      if (uCheck.length === 0) {
+        await pool.query(
+          `INSERT INTO users (username, password, email, role, college_id, status) VALUES (?, ?, ?, ?, ?, 'ACTIVE')`,
+          [u.username, u.password, u.email, u.role, u.college_id]
+        );
+      } else {
+        await pool.query(
+          `UPDATE users SET password = ? WHERE id = ?`,
+          [u.password, uCheck[0].id]
+        );
+      }
     }
+    console.log("🌱 Default Admin & College User accounts ensured & updated (admin:admin123, college:college123)");
 
     // Log init action
     await pool.query(`
