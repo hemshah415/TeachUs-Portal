@@ -362,7 +362,7 @@ async function uploadExcel(req, res) {
 
           const [upRes] = await pool.query(
             `INSERT INTO uploads (college_id, academic_year_id, file_name, file_path, student_count, validation_status, admin_status, admin_remarks, error_count, uploaded_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
             [college_id, academic_year_id, `${fileName} ➔ ${innerFileName}`, excelPath, studentCount, valStatus, initialAdminStatus, initialRemarks, errorCount]
           );
 
@@ -459,7 +459,7 @@ async function uploadExcel(req, res) {
 
         const [upRes] = await pool.query(
           `INSERT INTO uploads (college_id, academic_year_id, file_name, file_path, student_count, validation_status, admin_status, admin_remarks, error_count, uploaded_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
           [college_id, academic_year_id, fileName, filePath, studentCount, valStatus, initialAdminStatus, initialRemarks, errorCount]
         );
 
